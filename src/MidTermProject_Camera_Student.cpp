@@ -39,7 +39,7 @@ int main(int argc, const char *argv[])
     int dataBufferSize = 2;       // no. of images which are held in memory (ring buffer) at the same time
     vector<DataFrame> dataBuffer; // list of data frames which are held in memory at the same time
     bool bVis = false;            // visualize results
-
+     vector<cv::KeyPoint> vehicleKeypoints;
     /* MAIN LOOP OVER ALL IMAGES */
 
     for (size_t imgIndex = 0; imgIndex <= imgEndIndex - imgStartIndex; imgIndex++)
@@ -55,7 +55,7 @@ int main(int argc, const char *argv[])
         cv::Mat img, imgGray;
         img = cv::imread(imgFullFilename);
         cv::cvtColor(img, imgGray, cv::COLOR_BGR2GRAY);
-
+        
         //// STUDENT ASSIGNMENT
         //// TASK MP.1 -> replace the following code with ring buffer of size dataBufferSize
 
@@ -63,6 +63,10 @@ int main(int argc, const char *argv[])
         DataFrame frame;
         frame.cameraImg = imgGray;
         dataBuffer.push_back(frame);
+
+        if(dataBuffer.size()>dataBufferSize){
+            dataBuffer.erase(dataBuffer.begin());
+        }
 
         //// EOF STUDENT ASSIGNMENT
         cout << "#1 : LOAD IMAGE INTO BUFFER done" << endl;
@@ -72,18 +76,46 @@ int main(int argc, const char *argv[])
         // extract 2D keypoints from current image
         vector<cv::KeyPoint> keypoints; // create empty feature list for current image
         string detectorType = "SHITOMASI";
-
+        double time = 0.0;
+        
         //// STUDENT ASSIGNMENT
         //// TASK MP.2 -> add the following keypoint detectors in file matching2D.cpp and enable string-based selection based on detectorType
         //// -> HARRIS, FAST, BRISK, ORB, AKAZE, SIFT
 
         if (detectorType.compare("SHITOMASI") == 0)
         {
-            detKeypointsShiTomasi(keypoints, imgGray, false);
+            detKeypointsShiTomasi(keypoints, img, false);
+        } 
+        /*
+        else if (detectorType.compare("HARRIS") == 0) 
+        {
+            detKeypointsHarris(keypoints, img, false);
+        } 
+        else if (detectorType.compare("FAST") == 0) 
+        {
+            detKeypointsFast(keypoints, img, false);
         }
+        else if (detectorType.compare("BRISK") == 0) 
+        {
+            detKeypointsBrisk(keypoints, img, false);
+        }
+        else if (detectorType.compare("ORB") == 0) 
+        {
+            detKeypointsOrb(keypoints, img, false);
+        }
+        else if (detectorType.compare("AKAZE") == 0) 
+        {
+            detKeypointsAkaze(keypoints, img, false);
+        }
+        else if (detectorType.compare("SIFT") == 0) 
+        {
+            detKeypointsSift(keypoints, img, false);
+        } 
+        
+        */
         else
         {
-            //...
+            //
         }
         //// EOF STUDENT ASSIGNMENT
 
@@ -95,7 +127,13 @@ int main(int argc, const char *argv[])
         cv::Rect vehicleRect(535, 180, 180, 150);
         if (bFocusOnVehicle)
         {
-            // ...
+            for(int i=0; i<keypoints.size(); i++){
+                if(vehicleRect.contains(keypoints[i].pt)){
+                    vehicleKeypoints.push_back(keypoints[i]);
+                }
+            }
+
+            keypoints = vehicleKeypoints;
         }
 
         //// EOF STUDENT ASSIGNMENT
@@ -151,7 +189,7 @@ int main(int argc, const char *argv[])
             matchDescriptors((dataBuffer.end() - 2)->keypoints, (dataBuffer.end() - 1)->keypoints,
                              (dataBuffer.end() - 2)->descriptors, (dataBuffer.end() - 1)->descriptors,
                              matches, descriptorType, matcherType, selectorType);
-
+ 
             //// EOF STUDENT ASSIGNMENT
 
             // store matches in current data frame
