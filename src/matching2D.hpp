@@ -19,13 +19,13 @@
 #include "dataStructures.h"
 
 
-std::vector<double> detKeypointsHarris(std::vector<cv::KeyPoint> &keypoints, cv::Mat &img, std::vector<double> detectorTimes, bool bVis=false);
-std::vector<double> detKeypointsShiTomasi(std::vector<cv::KeyPoint> &keypoints, cv::Mat &img, std::vector<double> detectorTimes, bool bVis=false);
-std::vector<double> detKeypointsFast(std::vector<cv::KeyPoint> &keypoints, cv::Mat &img, std::vector<double> detectorTimes, bool bVis=false);
-std::vector<double> detKeypointsBrisk(std::vector<cv::KeyPoint> &keypoints, cv::Mat &img, std::vector<double> detectorTimes, bool bVis=false);
-std::vector<double> detKeypointsOrb(std::vector<cv::KeyPoint> &keypoints, cv::Mat &img, std::vector<double> detectorTimes, bool bVis=false);
-std::vector<double> detKeypointsAkaze(std::vector<cv::KeyPoint> &keypoints, cv::Mat &img, std::vector<double> detectorTimes, bool bVis=false);
-std::vector<double> detKeypointsSift(std::vector<cv::KeyPoint> &keypoints, cv::Mat &img, std::vector<double> detectorTimes, bool bVis=false);
+std::vector<double> detKeypointsHarris(std::vector<cv::KeyPoint> &keypoints,int &numOfKpts, cv::Mat &img, std::vector<double> detectorTimes, bool bVis=false);
+std::vector<double> detKeypointsShiTomasi(std::vector<cv::KeyPoint> &keypoints,int &numOfKpts, cv::Mat &img, std::vector<double> detectorTimes, bool bVis=false);
+std::vector<double> detKeypointsFast(std::vector<cv::KeyPoint> &keypoints,int &numOfKpts, cv::Mat &img, std::vector<double> detectorTimes, bool bVis=false);
+std::vector<double> detKeypointsBrisk(std::vector<cv::KeyPoint> &keypoints,int &numOfKpts, cv::Mat &img, std::vector<double> detectorTimes, bool bVis=false);
+std::vector<double> detKeypointsOrb(std::vector<cv::KeyPoint> &keypoints,int &numOfKpts, cv::Mat &img, std::vector<double> detectorTimes, bool bVis=false);
+std::vector<double> detKeypointsAkaze(std::vector<cv::KeyPoint> &keypoints,int &numOfKpts, cv::Mat &img, std::vector<double> detectorTimes, bool bVis=false);
+std::vector<double> detKeypointsSift(std::vector<cv::KeyPoint> &keypoints, int &numOfKpts, cv::Mat &img, std::vector<double> detectorTimes, bool bVis=false);
 
 std::vector<double> descKeypoints(std::vector<double> descritporTimes, std::vector<cv::KeyPoint> &keypoints, cv::Mat &img, cv::Mat &descriptors, std::string descriptorType);
 void matchDescriptors(std::vector<cv::KeyPoint> &kPtsSource, std::vector<cv::KeyPoint> &kPtsRef, cv::Mat &descSource, cv::Mat &descRef,

@@ -22,7 +22,7 @@ using namespace std;
 /* MAIN PROGRAM */
 int main(int argc, const char *argv[])
 {
-
+    int numOfKpts;
     /* INIT VARIABLES AND DATA STRUCTURES */
     std::vector<double> detectorTimes;
     std::vector<double> descriptorTimes;
@@ -78,7 +78,7 @@ int main(int argc, const char *argv[])
         // extract 2D keypoints from current image
         vector<cv::KeyPoint> keypoints; // create empty feature list for current image
         
-        string detectorType = "HARRIS";
+        string detectorType = "SIFT";
         
         
         //// STUDENT ASSIGNMENT
@@ -87,33 +87,33 @@ int main(int argc, const char *argv[])
 
         if (detectorType.compare("SHITOMASI") == 0)
         {
-            detectorTimes = detKeypointsShiTomasi(keypoints, imgGray, detectorTimes,false);
+            detectorTimes = detKeypointsShiTomasi(keypoints, numOfKpts, imgGray, detectorTimes, false);
         } 
         
         else if (detectorType.compare("HARRIS") == 0) 
         {
-            detectorTimes = detKeypointsHarris(keypoints, imgGray, detectorTimes,false);
+            detectorTimes = detKeypointsHarris(keypoints, numOfKpts, imgGray, detectorTimes,false);
         } 
         
         else if (detectorType.compare("FAST") == 0) 
         {
-            detectorTimes = detKeypointsFast(keypoints, imgGray, detectorTimes,false);
+            detectorTimes = detKeypointsFast(keypoints, numOfKpts, imgGray, detectorTimes,false);
         }
         else if (detectorType.compare("BRISK") == 0) 
         {
-            detectorTimes = detKeypointsBrisk(keypoints, imgGray, detectorTimes,false);
+            detectorTimes = detKeypointsBrisk(keypoints, numOfKpts, imgGray, detectorTimes,false);
         }
         else if (detectorType.compare("ORB") == 0) 
         {
-            detectorTimes = detKeypointsOrb(keypoints, imgGray, detectorTimes,false);
+            detectorTimes = detKeypointsOrb(keypoints, numOfKpts, imgGray, detectorTimes,false);
         }
         else if (detectorType.compare("AKAZE") == 0) 
         {
-            detectorTimes = detKeypointsAkaze(keypoints, imgGray, detectorTimes,false);
+            detectorTimes = detKeypointsAkaze(keypoints, numOfKpts, imgGray, detectorTimes,false);
         }
         else if (detectorType.compare("SIFT") == 0) 
         {
-            detectorTimes = detKeypointsSift(keypoints, imgGray, detectorTimes,false);
+            detectorTimes = detKeypointsSift(keypoints, numOfKpts, imgGray, detectorTimes,false);
         } 
         
         
@@ -167,7 +167,7 @@ int main(int argc, const char *argv[])
         //// -> BRIEF, ORB, FREAK, AKAZE, SIFT
 
         cv::Mat descriptors;
-        string descriptorType = "BRISK"; // BRISK, BRIEF, ORB, FREAK, AKAZE, SIFT
+        string descriptorType = "SIFT"; // BRISK, BRIEF, ORB, FREAK, AKAZE, SIFT
         descriptorTimes = descKeypoints(descriptorTimes, (dataBuffer.end() - 1)->keypoints, (dataBuffer.end() - 1)->cameraImg, descriptors, descriptorType);
         //// EOF STUDENT ASSIGNMENT
 
@@ -240,4 +240,6 @@ int main(int argc, const char *argv[])
     average = 0;
     average = (std::accumulate( descriptorTimes.begin(), descriptorTimes.end(), 0.00) / numOfElements) * 1000;
     cout << "Average Descriptor Time = " <<  average << " ms" << endl;
+
+    cout << "Total Keypoints: " << numOfKpts << endl;
 }

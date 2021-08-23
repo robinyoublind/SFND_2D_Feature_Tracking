@@ -71,7 +71,7 @@ void matchDescriptors(std::vector<cv::KeyPoint> &kPtsSource, std::vector<cv::Key
 }
 
 // Use one of several types of state-of-art descriptors to uniquely identify keypoints
-std::vector<double> descKeypoints(std::vector<double> descriptorTimes, vector<cv::KeyPoint> &keypoints, cv::Mat &img, cv::Mat &descriptors, string descriptorType)
+std::vector<double> descKeypoints(std::vector<double> descriptorTimes,vector<cv::KeyPoint> &keypoints, cv::Mat &img, cv::Mat &descriptors, string descriptorType)
 {
     // select appropriate descriptor
     cv::Ptr<cv::DescriptorExtractor> extractor;
@@ -115,7 +115,7 @@ std::vector<double> descKeypoints(std::vector<double> descriptorTimes, vector<cv
 }
 
 // Detect keypoints in image using the traditional Shi-Thomasi detector
-std::vector<double> detKeypointsShiTomasi(vector<cv::KeyPoint> &keypoints, cv::Mat &img, std::vector<double> detectorTimes, bool bVis )
+std::vector<double> detKeypointsShiTomasi(vector<cv::KeyPoint> &keypoints, int &numOfKpts, cv::Mat &img, std::vector<double> detectorTimes, bool bVis )
 {
     
     // compute detector parameters based on image size
@@ -144,6 +144,7 @@ std::vector<double> detKeypointsShiTomasi(vector<cv::KeyPoint> &keypoints, cv::M
     }
     t = ((double)cv::getTickCount() - t) / cv::getTickFrequency();
     cout << "Shi-Tomasi detection with n=" << keypoints.size() << " keypoints in " << 1000 * t / 1.0 << " ms" << endl;
+    numOfKpts += keypoints.size();
     detectorTimes.push_back(t);
 
     // visualize results
@@ -159,7 +160,7 @@ std::vector<double> detKeypointsShiTomasi(vector<cv::KeyPoint> &keypoints, cv::M
     return detectorTimes;
 }
 
-std::vector<double> detKeypointsHarris(std::vector<cv::KeyPoint> &keypoints, cv::Mat &img, std::vector<double> detectorTimes, bool bVis)
+std::vector<double> detKeypointsHarris(std::vector<cv::KeyPoint> &keypoints, int &numOfKpts, cv::Mat &img, std::vector<double> detectorTimes, bool bVis)
 {
     int blockSize = 2; // for every pixel, a blockSize × blockSize neighborhood is considered
     int apertureSize = 3; // aperture parameter for Sobel operator (must be odd)
@@ -222,6 +223,7 @@ std::vector<double> detKeypointsHarris(std::vector<cv::KeyPoint> &keypoints, cv:
 
     t = ((double)cv::getTickCount() - t) / cv::getTickFrequency();
     cout << "Harris detection with n=" << keypoints.size() << " keypoints in " << 1000 * t / 1.0 << " ms" << endl;
+    numOfKpts += keypoints.size();
     detectorTimes.push_back(t);
     
 
@@ -240,7 +242,7 @@ std::vector<double> detKeypointsHarris(std::vector<cv::KeyPoint> &keypoints, cv:
 
 }
 
-std::vector<double> detKeypointsFast(std::vector<cv::KeyPoint> &keypoints, cv::Mat &img, std::vector<double> detectorTimes, bool bVis)
+std::vector<double> detKeypointsFast(std::vector<cv::KeyPoint> &keypoints, int &numOfKpts, cv::Mat &img, std::vector<double> detectorTimes, bool bVis)
 {
     int threshold = 30;
 
@@ -250,11 +252,12 @@ std::vector<double> detKeypointsFast(std::vector<cv::KeyPoint> &keypoints, cv::M
     fast -> detect(img, keypoints);
     t = ((double)cv::getTickCount() - t) / cv::getTickFrequency();
     std::cout << "FAST with n= " << keypoints.size() << " keypoints in " << 1000*t/1.0 << " ms" << std::endl;
+    numOfKpts += keypoints.size();
     detectorTimes.push_back(t);
     return detectorTimes;
 }
 
-std::vector<double> detKeypointsBrisk(std::vector<cv::KeyPoint> &keypoints, cv::Mat &img, std::vector<double> detectorTimes, bool bVis)
+std::vector<double> detKeypointsBrisk(std::vector<cv::KeyPoint> &keypoints, int &numOfKpts, cv::Mat &img, std::vector<double> detectorTimes, bool bVis)
 {
     cv::Ptr<cv::FeatureDetector> brisk = cv::BRISK::create();
 
@@ -262,12 +265,13 @@ std::vector<double> detKeypointsBrisk(std::vector<cv::KeyPoint> &keypoints, cv::
     brisk -> detect(img, keypoints);
     t = ((double)cv::getTickCount() - t) / cv::getTickFrequency();
     std::cout << "BRISK detector with n= " << keypoints.size() << " keypoints in " << 1000*t/1.0 << " ms" << std::endl;
+    numOfKpts += keypoints.size();
     detectorTimes.push_back(t);
     return detectorTimes;
 }
 
 
-std::vector<double> detKeypointsOrb(std::vector<cv::KeyPoint> &keypoints, cv::Mat &img, std::vector<double> detectorTimes, bool bVis)
+std::vector<double> detKeypointsOrb(std::vector<cv::KeyPoint> &keypoints, int &numOfKpts, cv::Mat &img, std::vector<double> detectorTimes, bool bVis)
 {
     cv::Ptr<cv::FeatureDetector> orb = cv::ORB::create();
 
@@ -275,12 +279,13 @@ std::vector<double> detKeypointsOrb(std::vector<cv::KeyPoint> &keypoints, cv::Ma
     orb -> detect(img, keypoints);
     t = ((double)cv::getTickCount() - t) / cv::getTickFrequency();
     std::cout << "ORB detector with n= " << keypoints.size() << " keypoints in " << 1000*t/1.0 << " ms" << std::endl;
+    numOfKpts += keypoints.size();
     detectorTimes.push_back(t);
     return detectorTimes;
 
 }
 
-std::vector<double> detKeypointsAkaze(std::vector<cv::KeyPoint> &keypoints, cv::Mat &img, std::vector<double> detectorTimes, bool bVis)
+std::vector<double> detKeypointsAkaze(std::vector<cv::KeyPoint> &keypoints, int &numOfKpts, cv::Mat &img, std::vector<double> detectorTimes, bool bVis)
 {
     cv::Ptr<cv::FeatureDetector> akaze = cv::AKAZE::create();
 
@@ -288,11 +293,12 @@ std::vector<double> detKeypointsAkaze(std::vector<cv::KeyPoint> &keypoints, cv::
     akaze -> detect(img, keypoints);
     t = ((double)cv::getTickCount() - t) / cv::getTickFrequency();
     std::cout << "AKAZE detector with n= " << keypoints.size() << " keypoints in " << 1000*t/1.0 << " ms" << std::endl;
+    numOfKpts += keypoints.size();
     detectorTimes.push_back(t);
     return detectorTimes;
 }
 
-std::vector<double> detKeypointsSift(std::vector<cv::KeyPoint> &keypoints, cv::Mat &img, std::vector<double> detectorTimes, bool bVis)
+std::vector<double> detKeypointsSift(std::vector<cv::KeyPoint> &keypoints, int &numOfKpts, cv::Mat &img, std::vector<double> detectorTimes, bool bVis)
 {
     cv::Ptr<cv::FeatureDetector> sift = cv::xfeatures2d::SIFT::create();
 
@@ -300,6 +306,7 @@ std::vector<double> detKeypointsSift(std::vector<cv::KeyPoint> &keypoints, cv::M
     sift -> detect(img, keypoints);
     t = ((double)cv::getTickCount() - t) / cv::getTickFrequency();
     std::cout << "SIFT detector with n= " << keypoints.size() << " keypoints in " << 1000*t/1.0 << " ms" << std::endl;
+    numOfKpts += keypoints.size();
     detectorTimes.push_back(t);
     return detectorTimes;
 }
